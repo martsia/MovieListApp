@@ -8,19 +8,22 @@
 import UIKit
 
 class MoviesListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
     private let tableView = UITableView()
-
+    private var viewModel = MoviesViewModel()
+    
+    var apiResult = [MoviesData]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
+        fetchData()
     }
-
+    
     private func configureTableView() {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(MovieCell.self, forCellReuseIdentifier: "movieCell")
-        
+        tableView.backgroundColor = UIColor.black
         view.addSubview(tableView)
         
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -31,42 +34,36 @@ class MoviesListViewController: UIViewController, UITableViewDelegate, UITableVi
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
     }
-
-    // MARK: - UITableViewDataSource
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10 // WILL Replace with the actual count !!!!!!!!!!!
+    
+    private func fetchData() {
+        viewModel.fetchMoviesData { [weak self] (apiData, error) in
+            guard let self = self else { return }
+            
+            if let error = error {
+                // Handle the error (show alert, log, etc.)
+                print("Error fetching movies: \(error.localizedDescription)")
+            } else if let apiData = apiData {
+                self.apiResult = apiData
+                self.tableView.reloadData()
+            }
+        }
     }
-
+    
+    // MARK: - UITableViewDataSource
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return apiResult.count
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "movieCell", for: indexPath) as! MovieCell
-        // Configure the cell with data based on the movie at our API
-        cell.titleLabel.text = "Movie \(indexPath.row + 1)"
+        cell.configure(with: apiResult[indexPath.row])
+        cell.contentView.backgroundColor = UIColor.black
         return cell
     }
-}
-
-class MovieCell: UITableViewCell {
-    let titleLabel = UILabel()
-
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        configureCell()
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 120 
     }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    private func configureCell() {
-        contentView.addSubview(titleLabel)
-
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 25),
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            titleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -25),
-            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
-        ])
-    }
+    
 }
