@@ -14,7 +14,6 @@ class FavouritesViewController: UIViewController, UITableViewDataSource, UITable
 
     private let tableView = UITableView()
     var favorites: [MoviesData] = []
-    weak var favoritesUpdateDelegate: FavoritesUpdateDelegate?
     private var disposeBag = DisposeBag()
     
     override func viewDidLoad() {

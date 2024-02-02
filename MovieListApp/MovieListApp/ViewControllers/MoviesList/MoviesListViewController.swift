@@ -7,11 +7,7 @@
 
 import UIKit
 
-protocol FavoritesUpdateDelegate: AnyObject {
-    func didUpdateFavorites()
-}
-
-class MoviesListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FavoritesUpdateDelegate {
+class MoviesListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     private let tableView = UITableView()
     private var viewModel = MoviesViewModel()
     
@@ -23,10 +19,6 @@ class MoviesListViewController: UIViewController, UITableViewDelegate, UITableVi
         fetchData()
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
         tableView.addGestureRecognizer(longPressGesture)
-    }
-    
-    func didUpdateFavorites() {
-        fetchData()
     }
     
     @objc func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
