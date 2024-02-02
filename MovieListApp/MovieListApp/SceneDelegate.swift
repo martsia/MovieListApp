@@ -16,15 +16,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         let window = UIWindow(windowScene: windowScene)
 
-        // Load the initial view controller from the storyboard
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let initialViewController = storyboard.instantiateInitialViewController()
+        
+        // Instantiate MoviesListViewController
+        guard let mainTabBarController = storyboard.instantiateViewController(withIdentifier: "MainTabBarController") as? MainTabBarController else {
+            fatalError("Unable to instantiate MainTabBarController from storyboard")
+        }
 
-        window.rootViewController = initialViewController
+        window.rootViewController = UINavigationController(rootViewController: mainTabBarController)
         self.window = window
         self.window?.makeKeyAndVisible()
     }
-
 
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
