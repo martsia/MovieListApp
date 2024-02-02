@@ -13,9 +13,9 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
         self.setUpTabs()
         self.configureTabBar()
     }
-    
+
     private func configureTabBar() {
-        self.selectedIndex = 2
+        self.selectedIndex = 0  
         self.tabBar.tintColor = .red
         self.tabBar.unselectedItemTintColor = .darkGray
         self.tabBar.isTranslucent = false
@@ -23,17 +23,24 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
     }
     
     private func setUpTabs() {
-        let home = self.createNav(with: "Movies list", and: UIImage(systemName: "list.and.film"), vc: MoviesListViewController())
-        let favourites = self.createNav(with: "Favorites", and: UIImage(systemName: "heart"), vc: FavouritesViewController())
+        let moviesList = self.createNav(
+            with: "Movies list",
+            and: UIImage(systemName: "list.and.film"),
+            vc: storyboard!.instantiateViewController(identifier: "MoviesListViewController")
+        )
+        let favourites = self.createNav(
+            with: "Favorites",
+            and: UIImage(systemName: "heart"),
+            vc: FavouritesViewController()
+        )
         
-        self.setViewControllers([home, favourites], animated: true)
+        self.setViewControllers([moviesList, favourites], animated: true)
     }
-    
+
     private func createNav(with title: String, and image: UIImage?, vc: UIViewController) -> UIViewController {
+        let navigationController = UINavigationController(rootViewController: vc)
         vc.tabBarItem.title = title
         vc.tabBarItem.image = image
-        return vc
+        return navigationController
     }
-
 }
-
